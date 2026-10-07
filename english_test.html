@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ingliz Tili Testi – Beginner Darajasi</title>
+  <meta name="description" content="Ingliz tilini boshlangich darajada organuvchilar uchun interaktiv test."/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg1: #0d0e1c;
+      --accent: #7c6aff;
+      --accent2: #ff6aac;
+      --accent3: #6af0ff;
+      --glass: rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.12);
+      --text: #f0f0ff;
+      --text-muted: #8888b0;
+      --correct: #3dffa0;
+      --wrong: #ff5566;
+      --radius: 18px;
+    }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg1); color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative; }
+    .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.25; animation: blobMove 12s ease-in-out infinite alternate; }
+    .blob1 { width: 520px; height: 520px; background: var(--accent); top: -120px; left: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: 3s; }
+    .blob3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 6s; }
+    @keyframes blobMove { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.15) translate(40px,30px); } }
+    .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+    header { text-align: center; margin-bottom: 40px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 50px; padding: 6px 18px; font-size: 13px; color: var(--accent3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; backdrop-filter: blur(10px); }
+    h1 { font-size: clamp(2rem,5vw,3.2rem); font-weight: 800; background: linear-gradient(135deg,#fff 0%,var(--accent3) 50%,var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .subtitle { color: var(--text-muted); margin-top: 10px; font-size: 1.05rem; }
+    .stats-row { display: flex; justify-content: center; gap: 24px; margin-top: 22px; flex-wrap: wrap; }
+    .stat-chip { display: flex; align-items: center; gap: 7px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 50px; padding: 7px 18px; font-size: 13.5px; font-weight: 500; backdrop-filter: blur(10px); color: var(--text-muted); }
+    .stat-chip span { color: var(--text); font-weight: 700; }
+    .progress-wrap { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 18px 26px; margin-bottom: 30px; backdrop-filter: blur(12px); display: flex; align-items: center; gap: 18px; }
+    .progress-info { flex: 1; }
+    .progress-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .progress-bar-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 50px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg,var(--accent),var(--accent3)); transition: width 0.5s cubic-bezier(.4,0,.2,1); width: 0%; }
+    .q-counter { font-size: 2rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .question-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 36px 36px 28px; backdrop-filter: blur(16px); box-shadow: 0 8px 40px rgba(0,0,0,0.35); animation: fadeUp 0.4s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .q-category { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+    .q-text { font-size: 1.35rem; font-weight: 600; line-height: 1.55; margin-bottom: 28px; color: #fff; }
+    .q-blank { display: inline-block; border-bottom: 2px dashed var(--accent3); min-width: 80px; text-align: center; color: var(--accent3); padding: 0 4px; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 20px; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 500; color: var(--text); text-align: left; transition: all 0.22s ease; }
+    .option-btn:hover:not(:disabled) { background: rgba(124,106,255,0.18); border-color: var(--accent); transform: translateX(4px); }
+    .option-btn .opt-letter { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); font-weight: 700; font-size: 0.85rem; transition: all 0.22s; }
+    .option-btn.correct { background: rgba(61,255,160,0.12); border-color: var(--correct); color: var(--correct); }
+    .option-btn.correct .opt-letter { background: var(--correct); color: #0d0e1c; border-color: var(--correct); }
+    .option-btn.wrong { background: rgba(255,85,102,0.12); border-color: var(--wrong); color: var(--wrong); }
+    .option-btn.wrong .opt-letter { background: var(--wrong); color: #fff; border-color: var(--wrong); }
+    .option-btn:disabled { cursor: not-allowed; }
+    .feedback { margin-top: 20px; padding: 14px 20px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; display: none; align-items: center; gap: 10px; }
+    .feedback.show { display: flex; animation: fadeUp 0.3s ease; }
+    .feedback.correct-fb { background: rgba(61,255,160,0.12); border: 1px solid var(--correct); color: var(--correct); }
+    .feedback.wrong-fb { background: rgba(255,85,102,0.12); border: 1px solid var(--wrong); color: var(--wrong); }
+    .feedback-icon { font-size: 1.3rem; }
+    .nav-row { display: flex; justify-content: flex-end; margin-top: 24px; gap: 12px; }
+    .btn-next { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none; border-radius: 10px; padding: 12px 28px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; cursor: pointer; opacity: 0; pointer-events: none; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(124,106,255,0.35); }
+    .btn-next.show { opacity: 1; pointer-events: all; }
+    .btn-next:hover { transform: scale(1.05) translateY(-1px); }
+    #result-screen { display: none; }
+    .result-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 50px 40px; text-align: center; backdrop-filter: blur(16px); box-shadow: 0 8px 40px rgba(0,0,0,0.35); animation: fadeUp 0.5s ease; }
+    .result-emoji { font-size: 5rem; margin-bottom: 16px; display: block; animation: bounce 0.8s ease; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-20px); } }
+    .result-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+    .result-sub { color: var(--text-muted); margin-bottom: 30px; }
+    .score-ring { width: 150px; height: 150px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg,var(--accent),var(--accent3)); margin: 0 auto 30px; box-shadow: 0 0 50px rgba(124,106,255,0.4); }
+    .score-ring .score-num { font-size: 2.5rem; font-weight: 800; color: #fff; }
+    .score-ring .score-lbl { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
+    .result-breakdown { display: flex; justify-content: center; gap: 30px; margin-bottom: 36px; flex-wrap: wrap; }
+    .rb-item { text-align: center; }
+    .rb-val { font-size: 1.6rem; font-weight: 800; }
+    .rb-lbl { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .rb-item.c .rb-val { color: var(--correct); }
+    .rb-item.w .rb-val { color: var(--wrong); }
+    .btn-restart { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none; border-radius: 12px; padding: 14px 36px; font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.3s; }
+    .btn-restart:hover { transform: scale(1.06); }
+    .level-msg { margin-top: 20px; padding: 14px 22px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass); font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+    .level-msg strong { color: var(--text); }
+    .stars { margin: 10px 0 20px; font-size: 2rem; letter-spacing: 4px; }
+  </style>
+</head>
+<body>
+<div class="bg-blobs">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+<div class="container">
+  <header>
+    <div class="badge">🌍 Beginner Level</div>
+    <h1>🇬🇧 Ingliz Tili Testi</h1>
+    <p class="subtitle">Boshlangich daraja · A1–A2 · Grammatika &amp; Soz boyligi</p>
+    <div class="stats-row">
+      <div class="stat-chip">📝 <span id="total-q-display">20</span> ta savol</div>
+      <div class="stat-chip">🏆 Natija darhol koerinadi</div>
+    </div>
+  </header>
+  <div id="quiz-screen">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <div class="progress-label">
+          <span>Savol jarayoni</span>
+          <span id="prog-text">1 / 20</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="prog-fill"></div>
+        </div>
+      </div>
+      <div class="q-counter" id="q-counter">1</div>
+    </div>
+    <div class="question-card" id="question-card">
+      <div class="q-category" id="q-cat"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">
+        <span class="feedback-icon" id="fb-icon"></span>
+        <span id="fb-msg"></span>
+      </div>
+      <div class="nav-row">
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Keyingi savol →</button>
+      </div>
+    </div>
+  </div>
+  <div id="result-screen">
+    <div class="result-card">
+      <span class="result-emoji" id="r-emoji">🎉</span>
+      <h2 class="result-title" id="r-title">Tabriklaymiz!</h2>
+      <p class="result-sub" id="r-sub">Test yakunlandi</p>
+      <div class="score-ring">
+        <div class="score-num" id="r-score">0</div>
+        <div class="score-lbl">ball</div>
+      </div>
+      <div class="stars" id="r-stars"></div>
+      <div class="result-breakdown">
+        <div class="rb-item c"><div class="rb-val" id="r-correct">0</div><div class="rb-lbl">✅ Togri</div></div>
+        <div class="rb-item w"><div class="rb-val" id="r-wrong">0</div><div class="rb-lbl">❌ Xato</div></div>
+        <div class="rb-item"><div class="rb-val" id="r-pct">0%</div><div class="rb-lbl">📊 Foiz</div></div>
+      </div>
+      <div class="level-msg" id="r-msg"></div>
+      <br/>
+      <button class="btn-restart" onclick="restartQuiz()">🔄 Qayta boshlash</button>
+    </div>
+  </div>
+</div>
+<script>
+const questions = [
+  {cat:"📖 Maqolalar (Articles)", text:"I have ___ apple in my bag.", options:["a","an","the","no article"], answer:1, explain:"Apple unli tovush bilan boshlanadi, shuning uchun 'an' ishlatiladi."},
+  {cat:"📖 Maqolalar (Articles)", text:"___ sun rises in the east.", options:["A","An","The","–"], answer:2, explain:"Yagona narsa (quyosh) haqida gapirganda 'the' ishlatiladi."},
+  {cat:"📖 Maqolalar (Articles)", text:"She is ___ teacher.", options:["a","an","the","–"], answer:0, explain:"'teacher' undosh tovush bilan boshlanadi, shuning uchun 'a' ishlatiladi."},
+  {cat:"🔵 To be fe'li", text:"My name ___ Ali.", options:["am","is","are","be"], answer:1, explain:"III shaxs birlik uchun 'is' ishlatiladi."},
+  {cat:"🔵 To be fe'li", text:"We ___ students.", options:["am","is","are","be"], answer:2, explain:"Ko'plik (We, You, They) uchun 'are' ishlatiladi."},
+  {cat:"🔵 To be fe'li", text:"I ___ from Tashkent.", options:["am","is","are","be"], answer:0, explain:"I (men) uchun har doim 'am' ishlatiladi."},
+  {cat:"🙋 Olmoshlar (Pronouns)", text:"___ is my friend. (Malika haqida)", options:["He","She","It","They"], answer:1, explain:"Ayol kishi haqida gapirganda 'She' ishlatiladi."},
+  {cat:"🙋 Olmoshlar (Pronouns)", text:"This is my book. ___ is new.", options:["He","She","It","They"], answer:2, explain:"Jonsiz narsa uchun 'It' ishlatiladi."},
+  {cat:"⏱ Present Simple", text:"She ___ English every day.", options:["study","studys","studies","studying"], answer:2, explain:"III shaxs birlikda (She,He,It) fe'lga '-es' qoshiladi: study → studies."},
+  {cat:"⏱ Present Simple", text:"They ___ football on Sundays.", options:["play","plays","playing","played"], answer:0, explain:"They (ko'plik) bilan fe'l o'zgarmaydi: 'play'."},
+  {cat:"⏱ Present Simple", text:"I ___ coffee in the morning.", options:["drink","drinks","drank","drinking"], answer:0, explain:"I (men) bilan fe'l asl shaklida qoladi."},
+  {cat:"📚 So'z boyligi", text:"What is the opposite of 'big'?", options:["large","huge","small","tall"], answer:2, explain:"'Big' (katta)ning teskarisi 'small' (kichik)."},
+  {cat:"📚 So'z boyligi", text:"The color of grass is ___.", options:["blue","red","yellow","green"], answer:3, explain:"Ot-olan rangi 'green' (yashil)."},
+  {cat:"📚 So'z boyligi", text:"We use ___ to write.", options:["book","pen","phone","chair"], answer:1, explain:"Yozish uchun 'pen' (qalam) ishlatiladi."},
+  {cat:"📚 So'z boyligi", text:"A place where we buy things is called ___.", options:["hospital","school","shop","park"], answer:2, explain:"Narsa sotib olinadigan joy 'shop' (dokon)."},
+  {cat:"🔢 Sonlar & Vaqt", text:"How do you say '7:30' in English?", options:["seven past thirty","half past seven","seven thirty past","thirty past seven"], answer:1, explain:"'Half past seven' – soat yettining yarmi (7:30)."},
+  {cat:"📌 Kokmakchilar (Prepositions)", text:"The cat is ___ the box.", options:["in","on","at","by"], answer:0, explain:"'In' – ichida ekanligini bildiradi."},
+  {cat:"📌 Kokmakchilar (Prepositions)", text:"I wake up ___ 6 o'clock.", options:["in","on","at","by"], answer:2, explain:"Aniq vaqt oldidan 'at' ishlatiladi."},
+  {cat:"📌 Kokmakchilar (Prepositions)", text:"My birthday is ___ Monday.", options:["in","on","at","of"], answer:1, explain:"Hafta kunlari oldidan 'on' ishlatiladi."},
+  {cat:"📝 Koplik shakli (Plurals)", text:"What is the plural of 'child'?", options:["childs","childes","children","childrens"], answer:2, explain:"'child' ning koplik shakli 'children' – qoidasiz koplik."}
+];
+let current=0,score=0,correct=0,wrong=0,answered=false;
+const total=questions.length;
+document.getElementById('total-q-display').textContent=total;
+function shuffle(arr){return arr.slice().sort(()=>Math.random()-0.5);}
+let shuffled=shuffle(questions);
+function loadQuestion(){
+  answered=false;
+  const q=shuffled[current];
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-text').innerHTML=q.text.replace('___','<span class="q-blank">___</span>');
+  document.getElementById('q-counter').textContent=current+1;
+  document.getElementById('prog-text').textContent=(current+1)+' / '+total;
+  document.getElementById('prog-fill').style.width=((current/total)*100)+'%';
+  const optDiv=document.getElementById('options');
+  optDiv.innerHTML='';
+  const letters=['A','B','C','D'];
+  const opts=q.options.map((o,i)=>({text:o,idx:i}));
+  const so=shuffle(opts);
+  so.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.id='opt-'+i;
+    btn.innerHTML='<span class="opt-letter">'+letters[i]+'</span><span>'+opt.text+'</span>';
+    btn.onclick=()=>selectAnswer(opt.idx,btn,q,so);
+    optDiv.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';
+  document.getElementById('btn-next').classList.remove('show');
+  const card=document.getElementById('question-card');
+  card.style.animation='none';card.offsetHeight;card.style.animation='fadeUp 0.4s ease';
+}
+function selectAnswer(selectedIdx,clickedBtn,q,so){
+  if(answered)return;
+  answered=true;
+  const allBtns=document.querySelectorAll('.option-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  const isCorrect=selectedIdx===q.answer;
+  allBtns.forEach((b,i)=>{if(so[i].idx===q.answer)b.classList.add('correct');});
+  const fb=document.getElementById('feedback');
+  if(isCorrect){score++;correct++;clickedBtn.classList.add('correct');fb.className='feedback correct-fb show';document.getElementById('fb-icon').textContent='✅';document.getElementById('fb-msg').textContent="To'gri! "+q.explain;}
+  else{wrong++;clickedBtn.classList.add('wrong');fb.className='feedback wrong-fb show';document.getElementById('fb-icon').textContent='❌';document.getElementById('fb-msg').textContent="Notogri. "+q.explain;}
+  document.getElementById('btn-next').classList.add('show');
+}
+function nextQuestion(){
+  current++;
+  if(current>=total)showResult();
+  else loadQuestion();
+}
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const pct=Math.round((correct/total)*100);
+  document.getElementById('r-score').textContent=correct+'/'+total;
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-pct').textContent=pct+'%';
+  let emoji,title,sub,msg,stars;
+  if(pct>=90){emoji='🏆';title="Zo'r natija!";sub='Siz ingliz tilini juda yaxshi bilasiz!';stars='⭐⭐⭐⭐⭐';msg='<strong>A1+ daraja:</strong> Tabriklaymiz! Endi <strong>Elementary (A2)</strong> darajasiga otishingiz mumkin!';}
+  else if(pct>=70){emoji='😊';title='Yaxshi!';sub='Siz yaxshi natija korsatdingiz.';stars='⭐⭐⭐⭐';msg='<strong>A1 daraja:</strong> Asosiy bilimlaringiz bor. Koeprok mashq qiling!';}
+  else if(pct>=50){emoji='📚';title='Davom eting!';sub='Ozgina koeprok mashq kerak.';stars='⭐⭐⭐';msg='<strong>Pre-A1 daraja:</strong> Yaxshi boshlanding! Grammatika va soz boyligini yana korib chiqing.';}
+  else{emoji='💪';title="Qoymang!";sub='Mashq qilish bilan yaxshilanasiz.';stars='⭐⭐';msg='<strong>Boshlangich:</strong> Hali yol bor! Har kuni bitta mavzuni oerganib boring.';}
+  document.getElementById('r-emoji').textContent=emoji;
+  document.getElementById('r-title').textContent=title;
+  document.getElementById('r-sub').textContent=sub;
+  document.getElementById('r-stars').textContent=stars;
+  document.getElementById('r-msg').innerHTML=msg;
+}
+function restartQuiz(){
+  current=0;score=0;correct=0;wrong=0;shuffled=shuffle(questions);
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  loadQuestion();
+}
+loadQuestion();
+</script>
+</body>
+</html>
